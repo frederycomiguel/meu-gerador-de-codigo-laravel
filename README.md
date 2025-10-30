@@ -1,59 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🤖 Laravel AI CRUD Generator
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Um assistente de código inteligente para Laravel que gera um CRUD completo (Nível 5) usando IA (Google Gemini) a partir de um único comando.
 
-## About Laravel
+![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=for-the-badge&logo=php)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🧐 O que é isso?
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Cansado de escrever o mesmo *boilerplate* (código repetitivo) para cada CRUD? Este projeto resolve isso.
 
-## Learning Laravel
+Ele é um comando Artisan (`php artisan feature:gerar`) que usa o poder da API Google Gemini para interpretar um pedido em linguagem natural (como *"um CRUD de Clientes com nome e email"*) e gerar **toda** a estrutura de uma feature, economizando minutos (ou horas) de trabalho.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🚀 Funcionalidades (Nível 5)
 
-## Laravel Sponsors
+Este bot não gera apenas arquivos vazios. Ele gera um código de produção completo e pronto para ser testado:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* ✅ **Model**: Cria o Model e preenche automaticamente o array `$fillable` para proteção contra *Mass Assignment*.
+* ✅ **Migration**: Cria a Migration e já escreve os campos do banco de dados (ex: `$table->string('nome');`).
+* ✅ **Factory**: Cria a Factory e preenche o método `definition()` com os dados do *Faker* (ex: `'nome' => $this->faker->name()`).
+* ✅ **Service**: Gera uma classe de Serviço (Service Layer) com o Model injetado e os 5 métodos do CRUD (`listarTodos`, `criarNovo`, etc.) preenchidos com a lógica de banco de dados.
+* ✅ **Controller**: Gera o Controller com a Service injetada via construtor (Injeção de Dependência) e os 5 métodos (`index`, `store`, `show`, etc.) chamando os métodos do serviço.
+* ✅ **Form Requests**: Gera dois Form Requests (`StoreRequest` e `UpdateRequest`) e preenche o método `rules()` com as regras de validação extraídas do seu pedido (ex: `'email' => 'required|email|unique:clientes'`).
+* ✅ **Rotas de API**: Adiciona automaticamente a rota `Route::apiResource(...)` ao final do seu arquivo `routes/api.php`.
+* ✅ **Teste de Feature (PHPUnit)**: Gera um arquivo de teste (`...Test.php`) completo que testa as rotas `index`, `store` (sucesso e falha de validação) e `show`.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 🛠️ Tecnologias Utilizadas
 
-## Contributing
+* **Laravel 10.x**
+* **PHP 8.1+**
+* **Google Gemini API** (o "cérebro" por trás da geração)
+* **Laravel Stubs** (os "moldes" que nosso bot preenche)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### ⚙️ Instalação e Configuração
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Para rodar este projeto, você precisa:
 
-## Security Vulnerabilities
+1.  Clonar o repositório:
+    ```bash
+    git clone https://[URL_DO_SEU_REPOSITORIO_GIT] meu-gerador
+    cd meu-gerador
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2.  Instalar as dependências do PHP:
+    ```bash
+    composer install
+    ```
 
-## License
+3.  Criar seu arquivo de ambiente:
+    ```bash
+    cp .env.example .env
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4.  Gerar a chave do aplicativo:
+    ```bash
+    php artisan key:generate
+    ```
+
+5.  **Obter sua Chave de API do Gemini:**
+    * Vá até o [Google AI Studio](https://aistudio.google.com/).
+    * Crie uma nova chave de API.
+    * Adicione a chave ao seu arquivo `.env`:
+
+    ```env
+    GEMINI_API_KEY="AIza..."
+    ```
+
+6.  **Configurar os Serviços do Laravel:**
+    * Abra o arquivo `config/services.php`.
+    * Adicione a configuração do Gemini para que o Laravel possa ler a chave do `.env`:
+
+    ```php
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+    ],
+    ```
+
+7.  **Pronto!** Seu bot está configurado.
+
+---
+
+### 🎮 Como Usar
+
+É simples. Apenas rode o comando Artisan `feature:gerar` e descreva o CRUD que você deseja construir em linguagem natural.
+
+```bash
+php artisan feature:gerar "SUA DESCRIÇÃO AQUI"
+```
+### ✨ Exemplo de Uso
+
+Vamos gerar um CRUD completo para "Produtos".
+
+1. Rode o comando:
+
+```bash
+php artisan feature:gerar "Preciso de um CRUD completo para Produto, com nome (string), preco (decimal) e estoque (integer)"
+```
+
+

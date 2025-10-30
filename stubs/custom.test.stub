@@ -1,0 +1,76 @@
+<?php
+
+namespace {{Namespace}};
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
+use {{ModelNamespace}};
+
+class {{ClassName}} extends TestCase
+{
+    use RefreshDatabase; // Limpa o banco de dados a cada teste
+
+    /**
+     * Testa se a rota 'index' (listagem) está funcionando.
+     * @test
+     */
+    public function a_listagem_de_recursos_funciona()
+    {
+        // Cria 3 instâncias do model usando a Factory
+        {{ModelName}}::factory(3)->create();
+
+        $response = $this->getJson('/api/{{ApiRouteName}}');
+
+        $response->assertStatus(200)
+                 ->assertJsonCount(3); // Verifica se os 3 foram retornados
+    }
+
+    /**
+     * Testa se a criação de um novo recurso funciona.
+     * @test
+     */
+    public function a_criacao_de_recurso_funciona()
+    {
+        $data = {{PostData}};
+
+        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+
+        $response->assertStatus(201) // 201 Created
+                 ->assertJsonFragment($data);
+                 
+        // Verifica se os dados realmente foram salvos no banco
+        $this->assertDatabaseHas('{{DatabaseTableName}}', $data);
+    }
+    
+    /**
+     * Testa se a validação falha ao enviar dados incompletos.
+     * @test
+     */
+    public function a_validacao_falha_sem_um_campo_obrigatorio()
+    {
+        $data = {{PostData}};
+        
+        // Remove um campo obrigatório para forçar o erro
+        unset($data['{{ValidationColumn}}']); 
+
+        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+
+        $response->assertStatus(422) // 422 Unprocessable Entity
+                 ->assertJsonValidationErrors('{{ValidationColumn}}');
+    }
+    
+    /**
+     * Testa se a visualização de um recurso funciona.
+     * @test
+     */
+    public function a_visualizacao_de_recurso_funciona()
+    {
+        $model = {{ModelName}}::factory()->create();
+        
+        $response = $this->getJson('/api/{{ApiRouteName}}/' . $model->id);
+                         
+        $response->assertStatus(200)
+                 ->assertJsonFragment(['id' => $model->id]);
+    }
+}

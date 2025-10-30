@@ -1,0 +1,15 @@
+<?php
+
+namespace {{Namespace}};
+
+{{UseStatements}}
+
+class {{ClassName}}
+{
+    public function __construct(protected {{ModelName}} ${{ModelVarName}})
+    {
+        // Injeção de dependência do Model
+    }
+
+{{Methods}}
+}

@@ -1,0 +1,16 @@
+<?php
+
+namespace {{Namespace}};
+
+use App\Http\Controllers\Controller;
+{{UseStatements}}
+
+class {{ClassName}} extends Controller
+{
+    public function __construct(protected {{ServiceName}} ${{ServiceVarName}})
+    {
+        // Injeção de dependência do Service
+    }
+
+{{Methods}}
+}

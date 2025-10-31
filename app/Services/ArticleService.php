@@ -2,28 +2,28 @@
 
 namespace App\Services;
 
-use App\Models\Produto;
+use App\Models\Article;
 
-class ProdutoService
+class ArticleService
 {
-    public function __construct(protected Produto $produto)
+    public function __construct(protected Article $article)
     {
         // Injeção de dependência do Model
     }
 
     public function listarTodos()
     {
-        return $this->produto->all();
+        return $this->article->all();
     }
 
     public function criarNovo(array $data)
     {
-        return $this->produto->create($data);
+        return $this->article->create($data);
     }
 
     public function buscarPorId($id)
     {
-        return $this->produto->findOrFail($id);
+        return $this->article->findOrFail($id);
     }
 
     public function atualizar($id, array $data)

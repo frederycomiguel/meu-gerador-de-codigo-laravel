@@ -1,6 +1,6 @@
 # 🤖 Laravel AI CRUD Generator
 
-Um assistente de código inteligente para Laravel que gera um CRUD completo (Nível 5) usando IA (Google Gemini) a partir de um único comando.
+Um assistente de código inteligente para Laravel que gera um CRUD completo, refatora e remove features (Nível 9) usando IA (Google Gemini).
 
 ![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)
 ![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=for-the-badge&logo=php)
@@ -11,22 +11,28 @@ Um assistente de código inteligente para Laravel que gera um CRUD completo (Ní
 
 Cansado de escrever o mesmo *boilerplate* (código repetitivo) para cada CRUD? Este projeto resolve isso.
 
-Ele é um comando Artisan (`php artisan feature:gerar`) que usa o poder da API Google Gemini para interpretar um pedido em linguagem natural (como *"um CRUD de Clientes com nome e email"*) e gerar **toda** a estrutura de uma feature, economizando minutos (ou horas) de trabalho.
+Esta é uma suíte de ferramentas que usa o poder da API Google Gemini para interpretar pedidos em linguagem natural e gerar, modificar ou destruir uma feature inteira, economizando minutos (ou horas) de trabalho.
 
 ---
 
-### 🚀 Funcionalidades (Nível 5)
+### 🚀 Funcionalidades (Nível 9)
 
-Este bot não gera apenas arquivos vazios. Ele gera um código de produção completo e pronto para ser testado:
+Este bot não gera apenas arquivos vazios. Ele gerencia o ciclo de vida completo da sua feature:
 
-* ✅ **Model**: Cria o Model e preenche automaticamente o array `$fillable` para proteção contra *Mass Assignment*.
-* ✅ **Migration**: Cria a Migration e já escreve os campos do banco de dados (ex: `$table->string('nome');`).
-* ✅ **Factory**: Cria a Factory e preenche o método `definition()` com os dados do *Faker* (ex: `'nome' => $this->faker->name()`).
-* ✅ **Service**: Gera uma classe de Serviço (Service Layer) com o Model injetado e os 5 métodos do CRUD (`listarTodos`, `criarNovo`, etc.) preenchidos com a lógica de banco de dados.
-* ✅ **Controller**: Gera o Controller com a Service injetada via construtor (Injeção de Dependência) e os 5 métodos (`index`, `store`, `show`, etc.) chamando os métodos do serviço.
-* ✅ **Form Requests**: Gera dois Form Requests (`StoreRequest` e `UpdateRequest`) e preenche o método `rules()` com as regras de validação extraídas do seu pedido (ex: `'email' => 'required|email|unique:clientes'`).
-* ✅ **Rotas de API**: Adiciona automaticamente a rota `Route::apiResource(...)` ao final do seu arquivo `routes/api.php`.
-* ✅ **Teste de Feature (PHPUnit)**: Gera um arquivo de teste (`...Test.php`) completo que testa as rotas `index`, `store` (sucesso e falha de validação) e `show`.
+#### Geração (Nível 6)
+* ✅ **Model**: Cria o Model e preenche o `$fillable` e os métodos de **relacionamento** (ex: `belongsTo`).
+* ✅ **Migration**: Cria a Migration e escreve os campos normais e as **chaves estrangeiras** (ex: `foreignId('user_id')`).
+* ✅ **Factory**: Cria a Factory e preenche a `definition()` com dados do *Faker* e **factories de relacionamento** (ex: `User::factory()`).
+* ✅ **Service**: Gera uma classe de Serviço (Service Layer) com o Model injetado e os 5 métodos do CRUD preenchidos.
+* ✅ **Controller**: Gera o Controller com a Service injetada (Injeção de Dependência) e os 5 métodos chamando o serviço.
+* ✅ **Form Requests**: Gera `StoreRequest` e `UpdateRequest` e preenche as `rules()` com validações, incluindo `exists` para chaves estrangeiras.
+* ✅ **Rotas de API**: Adiciona automaticamente a rota `Route::apiResource(...)` ao `routes/api.php`.
+* ✅ **Teste de Feature (PHPUnit)**: Gera um teste `...Test.php` completo que valida as rotas `index`, `show`, `store` (sucesso e falha) e lida com a criação de **dependências** (como criar um `User` antes de criar um `Post`).
+
+#### Outras Ferramentas
+* ✅ **Nível 7 (Interface Gráfica):** Uma página web amigável em `/gerador` para rodar o comando de geração.
+* ✅ **Nível 8 (Refatoração Segura):** Um comando `php artisan feature:modificar` que cria e preenche uma *nova* migration para adicionar colunas e fornece uma "lista de tarefas" (TODO list) para o dev atualizar o Model/Factory.
+* ✅ **Nível 9 (Destruição):** Um comando `php artisan feature:remover` que reverte a migration, deleta todos os arquivos da feature e limpa a rota da API.
 
 ---
 
@@ -89,19 +95,40 @@ Para rodar este projeto, você precisa:
 
 ### 🎮 Como Usar
 
-É simples. Apenas rode o comando Artisan `feature:gerar` e descreva o CRUD que você deseja construir em linguagem natural.
+Você tem duas formas de usar a ferramenta:
 
+#### 1. Interface Gráfica (Recomendado)
+
+Rode o servidor local (`php artisan serve`) e acesse a UI no seu navegador:
+**[http://127.0.0.1:8000/gerador](http://127.0.0.1:8000/gerador)**
+
+A UI é focada na **criação** de *features* (Nível 6).
+
+#### 2. Comandos Artisan (Controle Total)
+
+Para ter acesso a todas as ferramentas (gerar, modificar e remover), use o terminal:
+
+* **Para CRIAR uma feature (Nível 6):**
+    ```bash
+    php artisan feature:gerar "CRUD para Post, com titulo e conteudo, que pertence a um User"
+    ```
+
+* **Para MODIFICAR uma feature (Nível 8):**
+    ```bash
+    php artisan feature:modificar "Adicione o campo 'status' (string, default 'ativo') ao model 'Post'"
+    ```
+
+* **Para REMOVER uma feature (Nível 9):**
+    ```bash
+    php artisan feature:remover Post
+    ```
+
+---
+
+### ✨ Exemplo de Uso (Nível 6)
+
+Vamos gerar um CRUD para "Posts" que pertencem a "Usuários".
+
+**1. Rode o comando:**
 ```bash
-php artisan feature:gerar "SUA DESCRIÇÃO AQUI"
-```
-### ✨ Exemplo de Uso
-
-Vamos gerar um CRUD completo para "Produtos".
-
-1. Rode o comando:
-
-```bash
-php artisan feature:gerar "Preciso de um CRUD completo para Produto, com nome (string), preco (decimal) e estoque (integer)"
-```
-
-
+php artisan feature:gerar "Quero um CRUD para Post, com titulo e conteudo (text), que pertence a um User"

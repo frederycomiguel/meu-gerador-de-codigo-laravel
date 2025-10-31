@@ -1,24 +1,24 @@
 <?php
 
-namespace {{Namespace}};
+namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use {{ModelNamespace}};
+use App\Models\Produto;
 use PHPUnit\Framework\Attributes\Test;
 // PASSO 6.1: Importa os models relacionados
-{{RelatedModelsUse}}
 
-class {{ClassName}} extends TestCase
+
+class ProdutoControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     #[Test]
     public function a_listagem_de_recursos_funciona()
     {
-        {{ModelName}}::factory(3)->create();
-        $response = $this->getJson('/api/{{ApiRouteName}}');
+        Produto::factory(3)->create();
+        $response = $this->getJson('/api/produtos');
         $response->assertStatus(200)
                  ->assertJsonCount(3);
     }
@@ -27,19 +27,26 @@ class {{ClassName}} extends TestCase
     public function a_criacao_de_recurso_funciona()
     {
         // PASSO 6.1: Cria as dependências primeiro (ex: o User)
-        {{DependentFactories}}
+        
 
         $data = [
-            {{PostData}}
+            'nome' => 'Nome de Teste',
+            'preco' => '123.45'
         ];
 
-        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+        $response = $this->postJson('/api/produtos', $data);
                  
         $response->assertStatus(201)
-                 ->assertJsonFragment({{AssertData}});
+                 ->assertJsonFragment([
+            'nome' => 'Nome de Teste',
+            'preco' => '123.45',
+        ]);
                  
-        $this->assertDatabaseHas('{{DatabaseTableName}}', [
-            {{AssertData}}
+        $this->assertDatabaseHas('produtos', [
+            [
+            'nome' => 'Nome de Teste',
+            'preco' => '123.45',
+        ]
         ]);
     }
     
@@ -47,27 +54,28 @@ class {{ClassName}} extends TestCase
     public function a_validacao_falha_sem_um_campo_obrigatorio()
     {
         // PASSO 6.1: Cria as dependências (necessárias para o 'user_id' não falhar)
-        {{DependentFactories}}
+        
 
         $data = [
-            {{PostData}}
+            'nome' => 'Nome de Teste',
+            'preco' => '123.45'
         ];
         
         // Remove um campo obrigatório para forçar o erro
-        unset($data['{{ValidationColumn}}']); 
+        unset($data['nome']); 
 
-        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+        $response = $this->postJson('/api/produtos', $data);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors('{{ValidationColumn}}');
+                 ->assertJsonValidationErrors('nome');
     }
     
     #[Test]
     public function a_visualizacao_de_recurso_funciona()
     {
-        $model = {{ModelName}}::factory()->create();
+        $model = Produto::factory()->create();
         
-        $response = $this->getJson('/api/{{ApiRouteName}}/' . $model->id);
+        $response = $this->getJson('/api/produtos/' . $model->id);
                          
         $response->assertStatus(200)
                  ->assertJsonFragment(['id' => $model->id]);

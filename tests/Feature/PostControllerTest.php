@@ -1,24 +1,25 @@
 <?php
 
-namespace {{Namespace}};
+namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use {{ModelNamespace}};
+use App\Models\Post;
 use PHPUnit\Framework\Attributes\Test;
 // PASSO 6.1: Importa os models relacionados
-{{RelatedModelsUse}}
+use \App\Models\User;
 
-class {{ClassName}} extends TestCase
+
+class PostControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     #[Test]
     public function a_listagem_de_recursos_funciona()
     {
-        {{ModelName}}::factory(3)->create();
-        $response = $this->getJson('/api/{{ApiRouteName}}');
+        Post::factory(3)->create();
+        $response = $this->getJson('/api/posts');
         $response->assertStatus(200)
                  ->assertJsonCount(3);
     }
@@ -27,19 +28,28 @@ class {{ClassName}} extends TestCase
     public function a_criacao_de_recurso_funciona()
     {
         // PASSO 6.1: Cria as dependências primeiro (ex: o User)
-        {{DependentFactories}}
+                $user = \App\Models\User::factory()->create();
+
 
         $data = [
-            {{PostData}}
+            'user_id' => $user->id,
+            'titulo' => 'Valor de Teste',
+            'conteudo' => 'Valor de Teste'
         ];
 
-        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+        $response = $this->postJson('/api/posts', $data);
                  
         $response->assertStatus(201)
-                 ->assertJsonFragment({{AssertData}});
+                 ->assertJsonFragment([
+            'titulo' => 'Valor de Teste',
+            'conteudo' => 'Valor de Teste',
+        ]);
                  
-        $this->assertDatabaseHas('{{DatabaseTableName}}', [
-            {{AssertData}}
+        $this->assertDatabaseHas('posts', [
+            [
+            'titulo' => 'Valor de Teste',
+            'conteudo' => 'Valor de Teste',
+        ]
         ]);
     }
     
@@ -47,27 +57,30 @@ class {{ClassName}} extends TestCase
     public function a_validacao_falha_sem_um_campo_obrigatorio()
     {
         // PASSO 6.1: Cria as dependências (necessárias para o 'user_id' não falhar)
-        {{DependentFactories}}
+                $user = \App\Models\User::factory()->create();
+
 
         $data = [
-            {{PostData}}
+            'user_id' => $user->id,
+            'titulo' => 'Valor de Teste',
+            'conteudo' => 'Valor de Teste'
         ];
         
         // Remove um campo obrigatório para forçar o erro
-        unset($data['{{ValidationColumn}}']); 
+        unset($data['titulo']); 
 
-        $response = $this->postJson('/api/{{ApiRouteName}}', $data);
+        $response = $this->postJson('/api/posts', $data);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors('{{ValidationColumn}}');
+                 ->assertJsonValidationErrors('titulo');
     }
     
     #[Test]
     public function a_visualizacao_de_recurso_funciona()
     {
-        $model = {{ModelName}}::factory()->create();
+        $model = Post::factory()->create();
         
-        $response = $this->getJson('/api/{{ApiRouteName}}/' . $model->id);
+        $response = $this->getJson('/api/posts/' . $model->id);
                          
         $response->assertStatus(200)
                  ->assertJsonFragment(['id' => $model->id]);

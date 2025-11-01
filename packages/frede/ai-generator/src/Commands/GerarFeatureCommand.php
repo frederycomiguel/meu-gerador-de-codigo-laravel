@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Frede\AiGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Exception;
-use App\Services\FeatureGenerationService; // <-- 1. Importa o novo Service
+use Frede\AiGenerator\FeatureGenerationService;
 
 class GerarFeatureCommand extends Command
 {

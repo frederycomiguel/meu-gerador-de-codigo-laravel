@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace Frede\AiGenerator;
 
 // Importações necessárias
 use Illuminate\Support\Facades\File;
@@ -135,7 +135,7 @@ class FeatureGenerationService
 
     private function obterPlanoDaIA(string $descricao)
     {
-        $apiKey = Config::get('services.gemini.api_key');
+        $apiKey = Config::get('ai-generator.api_key');
         if (!$apiKey) { throw new Exception("Chave de API do Gemini não configurada em config/services.php"); }
         
         $url = $this->geminiApiUrl . $apiKey;
@@ -306,7 +306,7 @@ class FeatureGenerationService
     protected function gerarRequests($configs, $modelConfig)
     {
         $this->logs[] = "INFO: Gerando Form Requests...";
-        $stubPath = base_path('stubs/custom.request.stub');
+        $stubPath = __DIR__.'/../resources/stubs/custom.request.stub';
         if (!File::exists($stubPath)) { $this->logs[] = "ERRO: Stub de request não encontrado."; return; }
         
         $rulesString = "";
@@ -338,7 +338,7 @@ class FeatureGenerationService
         $modelName = $modelConfig['name'];
         $modelVarName = Str::camel($modelName);
         File::ensureDirectoryExists(app_path('Services'));
-        $stubPath = base_path('stubs/custom.service.stub');
+        $stubPath = __DIR__.'/../resources/stubs/custom.service.stub';
         if (!File::exists($stubPath)) { $this->logs[] = "ERRO: Stub de service não encontrado."; return; }
         $stub = File::get($stubPath);
         $stub = str_replace('{{Namespace}}', 'App\Services', $stub);
@@ -367,7 +367,7 @@ class FeatureGenerationService
         $modelVarName = Str::camel($modelConfig['name']);
         $storeRequest = $requestConfigs[0]['name'];
         $updateRequest = $requestConfigs[1]['name'];
-        $stubPath = base_path('stubs/custom.controller.stub');
+        $stubPath = __DIR__.'/../resources/stubs/custom.controller.stub';
         if (!File::exists($stubPath)) { $this->logs[] = "ERRO: Stub de controller não encontrado."; return; }
         $stub = File::get($stubPath);
         $stub = str_replace('{{Namespace}}', 'App\Http\Controllers', $stub);
@@ -436,7 +436,7 @@ class FeatureGenerationService
             }
         }
 
-        $stubPath = base_path('stubs/custom.test.stub');
+        $stubPath = $stubPath = __DIR__.'/../resources/stubs/custom.test.stub';
         if (!File::exists($stubPath)) {
             $this->logs[] = "ERRO: Stub de teste não encontrado.";
             return;

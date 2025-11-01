@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Frede\AiGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File; // <-- Importar File
@@ -163,8 +163,8 @@ class RemoverFeatureCommand extends Command
                 File::delete($path);
                 $this->line(" - Deletado: {$path}");
             } else {
-                $this.this->warn(" - Não encontrado, pulando: {$path}");
-            }
+            $this->warn(" - Não encontrado, pulando: {$path}");
+        }
         }
     }
 }

@@ -1,9 +1,9 @@
 # 🤖 Laravel AI CRUD Generator
 
-Um assistente de código inteligente para Laravel que gera um CRUD completo, refatora e remove features (Nível 9) usando IA (Google Gemini).
+Um assistente de código inteligente para Laravel que gera um CRUD completo, refatora e remove features (Nível 9) usando IA (Google Gemini). Este projeto está estruturado como um **Pacote Laravel (Nível 10)**.
 
-![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel)
-![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=for-the-badge&logo=php)
+![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
 
 ---
 
@@ -12,6 +12,8 @@ Um assistente de código inteligente para Laravel que gera um CRUD completo, ref
 Cansado de escrever o mesmo *boilerplate* (código repetitivo) para cada CRUD? Este projeto resolve isso.
 
 Esta é uma suíte de ferramentas que usa o poder da API Google Gemini para interpretar pedidos em linguagem natural e gerar, modificar ou destruir uma feature inteira, economizando minutos (ou horas) de trabalho.
+
+O projeto principal (`meu-gerador-de-codigo`) serve como um "host" ou "demo", e a ferramenta em si vive dentro da pasta `packages/frede/ai-generator` como um pacote Composer local.
 
 ---
 
@@ -30,24 +32,15 @@ Este bot não gera apenas arquivos vazios. Ele gerencia o ciclo de vida completo
 * ✅ **Teste de Feature (PHPUnit)**: Gera um teste `...Test.php` completo que valida as rotas `index`, `show`, `store` (sucesso e falha) e lida com a criação de **dependências** (como criar um `User` antes de criar um `Post`).
 
 #### Outras Ferramentas
-* ✅ **Nível 7 (Interface Gráfica):** Uma página web amigável em `/gerador` para rodar o comando de geração.
+* ✅ **Nível 7 (Interface Gráfica):** Uma página web amigável em `/gerador` para rodar o comando de geração, carregada de dentro do pacote.
 * ✅ **Nível 8 (Refatoração Segura):** Um comando `php artisan feature:modificar` que cria e preenche uma *nova* migration para adicionar colunas e fornece uma "lista de tarefas" (TODO list) para o dev atualizar o Model/Factory.
 * ✅ **Nível 9 (Destruição):** Um comando `php artisan feature:remover` que reverte a migration, deleta todos os arquivos da feature e limpa a rota da API.
 
 ---
 
-### 🛠️ Tecnologias Utilizadas
+### ⚙️ Instalação e Configuração (Nível 10)
 
-* **Laravel 10.x**
-* **PHP 8.1+**
-* **Google Gemini API** (o "cérebro" por trás da geração)
-* **Laravel Stubs** (os "moldes" que nosso bot preenche)
-
----
-
-### ⚙️ Instalação e Configuração
-
-Para rodar este projeto, você precisa:
+Este projeto já está configurado para carregar a ferramenta como um pacote local. Para rodá-lo:
 
 1.  Clonar o repositório:
     ```bash
@@ -55,10 +48,11 @@ Para rodar este projeto, você precisa:
     cd meu-gerador
     ```
 
-2.  Instalar as dependências do PHP:
+2.  Instalar as dependências (isso irá "linkar" o pacote local):
     ```bash
     composer install
     ```
+    *(O `composer.json` principal já está configurado para encontrar e carregar o pacote de `packages/frede/ai-generator`).*
 
 3.  Criar seu arquivo de ambiente:
     ```bash
@@ -70,7 +64,14 @@ Para rodar este projeto, você precisa:
     php artisan key:generate
     ```
 
-5.  **Obter sua Chave de API do Gemini:**
+5.  **Publicar a Configuração do Pacote:**
+    Para que o bot encontre sua chave de API, você precisa publicar o arquivo de configuração dele:
+    ```bash
+    php artisan vendor:publish --tag=config
+    ```
+    *(Isso copiará o arquivo de config do pacote para `config/ai-generator.php`)*.
+
+6.  **Adicionar sua Chave de API do Gemini:**
     * Vá até o [Google AI Studio](https://aistudio.google.com/).
     * Crie uma nova chave de API.
     * Adicione a chave ao seu arquivo `.env`:
@@ -79,17 +80,7 @@ Para rodar este projeto, você precisa:
     GEMINI_API_KEY="AIza..."
     ```
 
-6.  **Configurar os Serviços do Laravel:**
-    * Abra o arquivo `config/services.php`.
-    * Adicione a configuração do Gemini para que o Laravel possa ler a chave do `.env`:
-
-    ```php
-    'gemini' => [
-        'api_key' => env('GEMINI_API_KEY'),
-    ],
-    ```
-
-7.  **Pronto!** Seu bot está configurado.
+7.  **Pronto!** O arquivo `config/ai-generator.php` lerá esta chave automaticamente.
 
 ---
 
@@ -129,6 +120,6 @@ Para ter acesso a todas as ferramentas (gerar, modificar e remover), use o termi
 
 Vamos gerar um CRUD para "Posts" que pertencem a "Usuários".
 
-**1. Rode o comando:**
+**1. Rode o comando (ou use a UI):**
 ```bash
 php artisan feature:gerar "Quero um CRUD para Post, com titulo e conteudo (text), que pertence a um User"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Frede\AiGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -85,7 +85,7 @@ class ModificarFeatureCommand extends Command
 
     private function obterPlanoDaIA(string $descricao)
     {
-        $apiKey = Config::get('services.gemini.api_key');
+        $apiKey = Config::get('ai-generator.api_key');
         if (!$apiKey) { throw new Exception("Chave de API do Gemini não configurada."); }
         $url = $this->geminiApiUrl . $apiKey;
         $prompt = $this->construirPrompt($descricao);

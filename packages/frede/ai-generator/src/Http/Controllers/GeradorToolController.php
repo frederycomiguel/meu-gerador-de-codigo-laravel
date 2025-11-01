@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Frede\AiGenerator\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\FeatureGenerationService; // <-- 1. Importa o nosso service
+use Frede\AiGenerator\FeatureGenerationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-
+use Illuminate\Routing\Controller; // <-- ADICIONE ESTA LINHA
 class GeradorToolController extends Controller
 {
     /**
@@ -16,7 +16,7 @@ class GeradorToolController extends Controller
     {
         // Apenas retorna a view. 
         // 'session('logs')' é usado para mostrar os logs da última execução.
-        return view('gerador', [
+        return view('ai-generator::gerador', [
             'logs' => session('logs', []),
             'last_prompt' => session('last_prompt', '')
         ]);
